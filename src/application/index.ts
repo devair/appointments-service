@@ -5,6 +5,7 @@ import * as dotenv from 'dotenv'
 import { AppDataSource } from '../infra/datasource/typeorm'
 import { CreateDoctorUseCase } from './useCases/CreateDoctorUseCase'
 import { DoctorCreatedQueueAdapterIN } from '../infra/messaging/DoctorCreatedQueueAdapterIN'
+import { router } from '../interface/web/routers'
 
 dotenv.config()
 
@@ -20,6 +21,7 @@ AppDataSource.initialize().then(async (datasource) => {
     const doctorCreatedConsumer = new DoctorCreatedQueueAdapterIN(rabbitMqUrl, createDoctorUseCase)
     await doctorCreatedConsumer.consume()
 
+    app.use('/api/v1', router(datasource))
 
     app.listen(3334,'0.0.0.0', () => {
         console.log(`Appointments Service listening  on port 3334`)
