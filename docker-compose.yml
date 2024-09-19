@@ -1,0 +1,43 @@
+services:
+  appointments-db:
+    image: postgres
+    container_name: appointments-db
+    restart: always
+    ports:
+      - 5433:5432
+    environment: 
+      - POSTGRES_USER=docker
+      - POSTGRES_PASSWORD=docker
+      - POSTGRES_DB=appointments_db
+    volumes:
+      - pgdata:/data/postgres
+  appointments-app:
+    build: 
+      context: .
+      dockerfile: Dockerfile          
+    container_name: appointments-app    
+    ports:
+      - 3334:3334
+      - 9230:9230 #porta para debug
+    volumes:
+      - ./src:/usr/src/app/src 
+      - /usr/src/app/node_modules
+
+    environment:
+      - APP_PORT=3334
+      - DB_DATABASE=appointments_db
+      - DB_USER=docker
+      - DB_PASS=docker
+      - DB_HOST=appointments-db
+      - DB_PORT=5432     
+      - RABBITMQ_URL=amqp://localhost
+    links:
+      - appointments-db
+
+    depends_on:
+      - appointments-db  
+
+volumes:
+  pgdata:
+    driver: local
+    

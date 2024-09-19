@@ -1,9 +1,8 @@
 export class Doctor{
 
-    id?: number
+    id?: Number
     constructor(
-        public name: string, 
-        public cpf: string, 
+        public name: string,         
         public email: string,         
         public crm: string,
     ){

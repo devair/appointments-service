@@ -9,11 +9,7 @@ export const DoctorEntity = new EntitySchema<Doctor>({
         name: {
             type: 'varchar',
             unique: false
-        },
-        cpf: {
-            type: 'varchar',
-            unique: true
-        },
+        },        
         email: {
             type: 'varchar',
             unique: true
