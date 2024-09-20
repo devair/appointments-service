@@ -13,7 +13,7 @@ export class DoctorsRepositoryPostgres implements IDoctorsRepository {
         return doctorCreated
     }
 
-    async findById(id: Number): Promise<Doctor | undefined> {
+    async findById(id: number): Promise<Doctor | undefined> {
         return await this.repository.findOne({ where: { id } })
     }
 

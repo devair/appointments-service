@@ -1,6 +1,6 @@
 export class Doctor{
 
-    id?: Number
+    id?: number
     constructor(
         public name: string,         
         public email: string,         
