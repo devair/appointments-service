@@ -1,4 +1,4 @@
-import { EntitySchemaColumnOptions } from "typeorm";
+import { EntitySchemaColumnOptions } from "typeorm"
 const isTest = process.env.NODE_ENV === "test"
 
 const dateType = process.env.NODE_ENV === "test" ? 'datetime' : 'timestamp with time zone'

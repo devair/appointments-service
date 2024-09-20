@@ -1,4 +1,4 @@
-import { Router } from "express";
+import { Router } from "express"
 import { DoctosApi } from "../api/DoctosApi"
 import { doctorsRouter } from "./doctors.router"
 import { DataSource } from "typeorm"

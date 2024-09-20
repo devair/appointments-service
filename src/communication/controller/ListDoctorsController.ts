@@ -9,7 +9,7 @@ export class ListDoctorsController {
     {}
 
     async handler(): Promise<OutputCreatedDoctorDto[]> {        
-        return await this.listDoctorsUseCase.execute();       
+        return await this.listDoctorsUseCase.execute()       
     }
     
 }

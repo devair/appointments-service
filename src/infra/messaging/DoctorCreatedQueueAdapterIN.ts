@@ -12,29 +12,29 @@ export class DoctorCreatedQueueAdapterIN {
     async consume() {
         amqpCallback.connect(this.rabbitMQUrl, (err: any, connection: any) => {
             if (err) {
-                throw err;
+                throw err
             }
             connection.createChannel((err: any, channel: any) => {
                 if (err) {
-                    throw err;
+                    throw err
                 }
-                channel.assertQueue(QueueNames.DOCTOR_REGISTRATION, { durable: true });
+                channel.assertQueue(QueueNames.DOCTOR_REGISTRATION, { durable: true })
                 channel.consume(QueueNames.DOCTOR_REGISTRATION, async (msg: any) => {
                     if (msg !== null) {
                         try {
                             // Processa a mensagem                 
                             console.log(JSON.parse(msg.content.toString()))           
-                            const doctor: InputCreatedDoctorDto = JSON.parse(msg.content.toString());
+                            const doctor: InputCreatedDoctorDto = JSON.parse(msg.content.toString())
 
                             console.log('Doctor - Received:', doctor)
 
                             // Aqui o servico persiste e publica na mesma transacao para o proximo canal
                             await this.createDoctorUseCase.execute(doctor)
-                            channel.ack(msg);
+                            channel.ack(msg)
                         } catch (error) {
-                            console.error('Processing error', error.message);
+                            console.error('Processing error', error.message)
                             // Rejeita a mensagem e reencaminha para a fila
-                            channel.nack(msg);
+                            channel.nack(msg)
                         }
                     }
                 }, { noAck: false })
