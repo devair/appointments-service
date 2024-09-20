@@ -6,6 +6,9 @@ import { ListDoctorsController } from "../../../communication/controller/ListDoc
 import { IListAvailableSlotsUseCase } from "../../../core/usesCase/IListAvailableSlotsUseCase"
 import { IListDoctorsUseCase } from "../../../core/usesCase/IListDoctorsUseCase"
 import { ListAvailableSlotsController } from "../../../communication/controller/ListAvailableSlotsController"
+import { CreateSlotUseCase } from "../../../application/useCases/CreateSlotUseCase"
+import { ICreateSlotUseCase } from "../../../core/usesCase/ICreateSlotUseCase"
+import { CreateSlotController } from "../../../communication/controller/CreateSlotController"
 
 export class DoctosApi {
 
@@ -40,4 +43,20 @@ export class DoctosApi {
             return response.status(400).json({ message: ex.message })
         }
     }  
+
+    async createSlot( request, response: Response): Promise<Response>{
+        const createSlotUseCase: ICreateSlotUseCase = new CreateSlotUseCase(this.dataSource)
+        const createSlotController = new CreateSlotController(createSlotUseCase)
+        
+        const { startTime, endTime, isAvailable } = request.body
+        const { email } = request.user        
+        
+        try {
+            const data = await createSlotController.handler({ doctorEmail: email, startTime, endTime, isAvailable})
+            response.contentType('application/json')
+            return response.status(200).json(data)
+        } catch (ex) {
+            return response.status(400).json({ message: ex.message })
+        }
+    }
 }

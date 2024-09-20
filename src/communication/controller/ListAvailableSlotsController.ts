@@ -9,7 +9,7 @@ export class ListAvailableSlotsController {
     {}
 
     async handler(id: number): Promise<AvailableSlot[]> {        
-        return await this.listAvailableSlotsUseCase.execute(id);       
+        return await this.listAvailableSlotsUseCase.execute(id)       
     }
     
 }

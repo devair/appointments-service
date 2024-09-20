@@ -7,5 +7,7 @@ export const doctorsRouter = (api: DoctosApi)=> {
 
     router.get('/available-slots/:id', (req,res)=>api.availableSlots(req,res))
 
+    router.post('/available-slots/', (req,res)=>api.createSlot(req,res))
+
     return router
 }
