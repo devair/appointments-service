@@ -5,11 +5,10 @@ export class ListAvailableSlotsController {
 
     constructor(
         public listAvailableSlotsUseCase: IListAvailableSlotsUseCase
-    )
-    {}
+    ) { }
 
-    async handler(id: number): Promise<AvailableSlot[]> {        
-        return await this.listAvailableSlotsUseCase.execute(id)       
+    async handler(id: number): Promise<AvailableSlot[]> {
+        return await this.listAvailableSlotsUseCase.execute(id)
     }
-    
+
 }

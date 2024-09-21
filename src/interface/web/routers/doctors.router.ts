@@ -9,5 +9,8 @@ export const doctorsRouter = (api: DoctosApi)=> {
 
     router.post('/available-slots/', (req,res)=>api.createSlot(req,res))
 
+    router.post('/appointments/', (req,res)=>api.createAppointment(req,res))
+
+
     return router
 }

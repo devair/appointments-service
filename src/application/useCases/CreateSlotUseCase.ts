@@ -7,6 +7,7 @@ import { DoctorEntity } from "../../infra/datasource/typeorm/entities/DoctorEnti
 import { AvailableSlotsRepositoryPostgres } from "../../infra/datasource/typeorm/postgres/AvailableSlotsRepositoryPostgres"
 import { DoctorsRepositoryPostgres } from "../../infra/datasource/typeorm/postgres/DoctorsRepositoryPostgres"
 import { IAvailableSlotsRepository } from "../../ports/IAvailableSlotsRepository"
+import { Role } from "../../core/entities/Roles"
 
 
 export class CreateSlotUseCase implements ICreateSlotUseCase {
@@ -20,7 +21,11 @@ export class CreateSlotUseCase implements ICreateSlotUseCase {
     }
     
     async execute(input: InputCreateSlotDto ): Promise<OutputCreateSlotDto> {  
-        const { doctorEmail, startTime, endTime, isAvailable} = input
+        const { user, doctorEmail, startTime, endTime, isAvailable} = input
+
+        if(user?.role != Role.DOCTOR ){
+            throw new Error(`Only doctors can create slot times`)
+        }
 
         const doctorsRepository = new DoctorsRepositoryPostgres(this.dataSource.getRepository(DoctorEntity))
         

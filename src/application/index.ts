@@ -6,6 +6,8 @@ import { AppDataSource } from '../infra/datasource/typeorm'
 import { CreateDoctorUseCase } from './useCases/CreateDoctorUseCase'
 import { DoctorCreatedQueueAdapterIN } from '../infra/messaging/DoctorCreatedQueueAdapterIN'
 import { router } from '../interface/web/routers'
+import { PatientCreatedQueueAdapterIN } from '../infra/messaging/PatientCreatedQueueAdapterIN'
+import { CreatePatientUseCase } from './useCases/CreatePatientUseCase'
 
 dotenv.config()
 
@@ -20,6 +22,10 @@ AppDataSource.initialize().then(async (datasource) => {
     const createDoctorUseCase = new CreateDoctorUseCase(datasource)
     const doctorCreatedConsumer = new DoctorCreatedQueueAdapterIN(rabbitMqUrl, createDoctorUseCase)
     await doctorCreatedConsumer.consume()
+
+    const createPatientUseCase = new CreatePatientUseCase(datasource)
+    const patientCreatedQueueAdapterIN = new PatientCreatedQueueAdapterIN(rabbitMqUrl, createPatientUseCase)
+    await patientCreatedQueueAdapterIN.consume()  
 
     app.use('/api/v1', router(datasource))
 

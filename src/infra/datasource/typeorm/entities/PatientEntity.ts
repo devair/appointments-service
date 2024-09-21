@@ -2,7 +2,7 @@ import { EntitySchema } from "typeorm"
 import { BaseColumnSchemaPart } from "./BaseColumnSchemaPart "
 import { Patient } from "../../../../core/entities/Patient"
 
-export const DoctorEntity = new EntitySchema<Patient>({
+export const PatientEntity = new EntitySchema<Patient>({
     name: "patients",
     columns: {
         ...BaseColumnSchemaPart,

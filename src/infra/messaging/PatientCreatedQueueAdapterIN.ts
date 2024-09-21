@@ -1,12 +1,12 @@
 import amqpCallback from "amqplib/callback_api"
-import { ICreateDoctorUseCase } from "../../core/usesCase/ICreateDoctorUseCase"
+import { InputCreatedPatientDto } from "../../core/usesCase/dots/ICreatedPatientDto"
+import { ICreatePatientUseCase } from "../../core/usesCase/ICreatePatientUseCase"
 import { QueueNames } from "../../core/messaging/QueueNames"
-import { InputCreatedDoctorDto } from "../../core/usesCase/dots/ICreatedDoctorDto"
 
-export class DoctorCreatedQueueAdapterIN {
+export class PatientCreatedQueueAdapterIN {
     constructor(
         private rabbitMQUrl: string,
-        private createDoctorUseCase: ICreateDoctorUseCase
+        private createPatientUseCase: ICreatePatientUseCase
     ) { }
 
     async consume() {
@@ -18,18 +18,18 @@ export class DoctorCreatedQueueAdapterIN {
                 if (err) {
                     throw err
                 }
-                channel.assertQueue(QueueNames.DOCTOR_REGISTRATION, { durable: true })
-                channel.consume(QueueNames.DOCTOR_REGISTRATION, async (msg: any) => {
+                channel.assertQueue(QueueNames.PATIENT_REGISTRATION, { durable: true })
+                channel.consume(QueueNames.PATIENT_REGISTRATION, async (msg: any) => {
                     if (msg !== null) {
                         try {
                             // Processa a mensagem                 
                             console.log(JSON.parse(msg.content.toString()))           
-                            const doctor: InputCreatedDoctorDto = JSON.parse(msg.content.toString())
+                            const doctor: InputCreatedPatientDto = JSON.parse(msg.content.toString())
 
-                            console.log('Doctor - Received:', doctor)
+                            console.log('Patient - Received:', doctor)
 
                             // Aqui o servico persiste e publica na mesma transacao para o proximo canal
-                            await this.createDoctorUseCase.execute(doctor)
+                            await this.createPatientUseCase.execute(doctor)
                             channel.ack(msg)
                         } catch (error) {
                             console.error('Processing error', error.message)

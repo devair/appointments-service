@@ -3,16 +3,16 @@ import { Doctor } from "./Doctor"
 import { Patient } from "./Patient"
 
 export class Appointment {
-    id?: Number
+    id?: number
     createdAt: Date
-    doctorId: Number
-    patientId: Number
-    availableSlotId: Number    
+    doctorId: number
+    patientId: number
+    availableSlotId: number    
+    
     constructor(
         public doctor: Doctor,
         public patient: Patient,
-        public availableSlot: AvailableSlot,
-        public appointmentTime: Date,
+        public availableSlot: AvailableSlot,        
         public status: string,        
     ){
         this.doctorId = doctor.id

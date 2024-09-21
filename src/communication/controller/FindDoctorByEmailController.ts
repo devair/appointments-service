@@ -5,11 +5,10 @@ export class FindDoctorByEmailController {
 
     constructor(
         public findDoctorByEmailUseCase: IFindDoctorByEmailUseCase
-    )
-    {}
+    ) { }
 
-    async handler(email: string): Promise<Doctor> {        
-        return await this.findDoctorByEmailUseCase.execute(email)       
+    async handler(email: string): Promise<Doctor> {
+        return await this.findDoctorByEmailUseCase.execute(email)
     }
-    
+
 }

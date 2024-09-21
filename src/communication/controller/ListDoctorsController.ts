@@ -5,11 +5,10 @@ export class ListDoctorsController {
 
     constructor(
         public listDoctorsUseCase: IListDoctorsUseCase
-    )
-    {}
+    ) { }
 
-    async handler(): Promise<OutputCreatedDoctorDto[]> {        
-        return await this.listDoctorsUseCase.execute()       
+    async handler(): Promise<OutputCreatedDoctorDto[]> {
+        return await this.listDoctorsUseCase.execute()
     }
-    
+
 }
