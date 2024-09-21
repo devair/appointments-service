@@ -1,5 +1,5 @@
 import { EntitySchema } from "typeorm"
-import { BaseColumnSchemaPart } from "./BaseColumnSchemaPart "
+import { BaseColumnSchemaPart } from "./BaseColumnSchemaPart"
 import { Patient } from "../../../../core/entities/Patient"
 
 export const PatientEntity = new EntitySchema<Patient>({

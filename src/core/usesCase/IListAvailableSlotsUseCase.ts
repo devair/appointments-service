@@ -1,5 +1,5 @@
-import { AvailableSlot } from "../entities/AvailableSlot"
+import { OutputDoctorAvailableSlotDto } from "./dots/IDoctorAvailableSlot"
 
 export interface IListAvailableSlotsUseCase{    
-    execute(doctorId: number): Promise<AvailableSlot[]> 
+    execute(doctorId: number): Promise<OutputDoctorAvailableSlotDto[]> 
 }

@@ -1,5 +1,5 @@
 import { EntitySchema } from "typeorm"
-import { BaseColumnSchemaPart } from "./BaseColumnSchemaPart "
+import { BaseColumnSchemaPart } from "./BaseColumnSchemaPart"
 import { Appointment } from "../../../../core/entities/Appointment"
 
 const dateType = process.env.NODE_ENV === "test" ? 'datetime' : 'timestamp with time zone'

@@ -1,4 +1,4 @@
-import { AvailableSlot } from "../../core/entities/AvailableSlot"
+import { OutputDoctorAvailableSlotDto } from "../../core/usesCase/dots/IDoctorAvailableSlot"
 import { IListAvailableSlotsUseCase } from "../../core/usesCase/IListAvailableSlotsUseCase"
 
 export class ListAvailableSlotsController {
@@ -7,7 +7,7 @@ export class ListAvailableSlotsController {
         public listAvailableSlotsUseCase: IListAvailableSlotsUseCase
     ) { }
 
-    async handler(id: number): Promise<AvailableSlot[]> {
+    async handler(id: number): Promise<OutputDoctorAvailableSlotDto[]> {
         return await this.listAvailableSlotsUseCase.execute(id)
     }
 
