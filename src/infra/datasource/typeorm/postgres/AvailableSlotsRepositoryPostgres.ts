@@ -15,7 +15,11 @@ export class AvailableSlotsRepositoryPostgres implements IAvailableSlotsReposito
         return slotCreated
     }
 
-    async findByDoctorId(id: number): Promise<AvailableSlot[]> {
-        return await this.repository.find({ where: { doctorId: id }})
+    async findByDoctorId(doctorId: number): Promise<AvailableSlot[]> {
+        return await this.repository.find({ where: { doctorId }})
+    }
+
+    async findById(id: number): Promise<AvailableSlot | undefined> {
+        return await this.repository.findOne({ where: { id } })
     }
 }

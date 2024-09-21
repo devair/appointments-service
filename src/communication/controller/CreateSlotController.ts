@@ -5,11 +5,10 @@ export class CreateSlotController {
 
     constructor(
         public createSlotUseCase: ICreateSlotUseCase
-    )
-    {}
+    ) { }
 
-    async handler(input: InputCreateSlotDto): Promise<OutputCreateSlotDto> {        
-        return await this.createSlotUseCase.execute(input)       
+    async handler(input: InputCreateSlotDto): Promise<OutputCreateSlotDto> {
+        return await this.createSlotUseCase.execute(input)
     }
-    
+
 }

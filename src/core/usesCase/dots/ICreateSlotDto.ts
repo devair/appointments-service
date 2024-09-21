@@ -7,6 +7,7 @@ export interface OutputCreateSlotDto {
 }
 
 export interface InputCreateSlotDto {
+    user: any
     doctorEmail: string
     startTime: Date
     endTime: Date

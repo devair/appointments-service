@@ -1,6 +1,6 @@
 import { DataSource } from "typeorm"
 import { Doctor } from "../../core/entities/Doctor"
-import { ICreateDoctorUseCase } from "../../core/usesCase/ICreateUserUseCase"
+import { ICreateDoctorUseCase } from "../../core/usesCase/ICreateDoctorUseCase"
 import { IDoctorsRepository } from "../../ports/IDoctorsRepository"
 import { InputCreatedDoctorDto, OutputCreatedDoctorDto } from "../../core/usesCase/dots/ICreatedDoctorDto"
 import { DoctorEntity } from "../../infra/datasource/typeorm/entities/DoctorEntity"

@@ -23,11 +23,7 @@ export const AppointmentEntity = new EntitySchema<Appointment>({
             name: 'available_slot_id',
             type: Number,
             unique: false
-        },
-        appointmentTime: {
-            name: "appointment_time",
-            type: dateType    
-        },
+        },       
         status: {
             type: 'varchar',
             unique: false

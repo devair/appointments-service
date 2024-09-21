@@ -9,6 +9,9 @@ import { ListAvailableSlotsController } from "../../../communication/controller/
 import { CreateSlotUseCase } from "../../../application/useCases/CreateSlotUseCase"
 import { ICreateSlotUseCase } from "../../../core/usesCase/ICreateSlotUseCase"
 import { CreateSlotController } from "../../../communication/controller/CreateSlotController"
+import { CreateAppointmentUseCase } from "../../../application/useCases/CreateAppointmentUseCase"
+import { ICreateAppointmentUseCase } from "../../../core/usesCase/ICreateAppointmentUseCase"
+import { CreateAppointmentController } from "../../../communication/controller/CreateAppointmentController"
 
 export class DoctosApi {
 
@@ -49,10 +52,28 @@ export class DoctosApi {
         const createSlotController = new CreateSlotController(createSlotUseCase)
         
         const { startTime, endTime, isAvailable } = request.body
-        const { email } = request.user        
+        const  user  = request.user        
+        const { email } = user
+
+        try {
+            const data = await createSlotController.handler({ user, doctorEmail: email, startTime, endTime, isAvailable})
+            response.contentType('application/json')
+            return response.status(200).json(data)
+        } catch (ex) {
+            return response.status(400).json({ message: ex.message })
+        }
+    }
+
+    async createAppointment( request, response: Response): Promise<Response>{
+        const createAppointmentUseCase: ICreateAppointmentUseCase = new CreateAppointmentUseCase(this.dataSource)
+        const createAppointmentController = new CreateAppointmentController(createAppointmentUseCase)
+        
+        const { doctorId, patientId, slotId} = request.body
+        const  user  = request?.user        
+        const { email } = user
         
         try {
-            const data = await createSlotController.handler({ doctorEmail: email, startTime, endTime, isAvailable})
+            const data = await createAppointmentController.handler({user, doctorId, patientId, slotId })
             response.contentType('application/json')
             return response.status(200).json(data)
         } catch (ex) {
