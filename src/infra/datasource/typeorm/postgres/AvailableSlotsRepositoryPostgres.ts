@@ -14,12 +14,18 @@ export class AvailableSlotsRepositoryPostgres implements IAvailableSlotsReposito
         const slotCreated = await this.repository.save(newSlot)
         return slotCreated
     }
-
-    async findByDoctorId(doctorId: number): Promise<AvailableSlot[]> {
-        return await this.repository.find({ where: { doctorId }})
-    }
-
+    
     async findById(id: number): Promise<AvailableSlot | undefined> {
         return await this.repository.findOne({ where: { id } })
+    }
+    
+    async listAvailableSlotsByDoctorId(doctorId: number): Promise<AvailableSlot[]> {
+        const all = await this.repository.createQueryBuilder("available_slots")
+        .innerJoinAndSelect('available_slots.doctor', 'doctor')        
+        .where('available_slots.doctor_id = :doctorId', { doctorId })
+        .andWhere('available_slots.is_available = :isAvailable', { isAvailable: true })
+        .getMany()
+
+        return all
     }
 }

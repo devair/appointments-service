@@ -1,6 +1,7 @@
 import { EntitySchema } from "typeorm"
 import { AvailableSlot } from "../../../../core/entities/AvailableSlot"
-import { BaseColumnSchemaPart } from "./BaseColumnSchemaPart "
+import { BaseColumnSchemaPart } from "./BaseColumnSchemaPart"
+
 
 const dateType = process.env.NODE_ENV === "test" ? 'datetime' : 'timestamp with time zone'
 
@@ -23,8 +24,8 @@ export const AvailableSlotEntity = new EntitySchema<AvailableSlot>({
             type: dateType            
         },
         isAvailable : {
-            name: "is_available ",
-            type: Boolean,
+            name: "is_available",
+            type: "boolean",
             default: true
         }
     },    
