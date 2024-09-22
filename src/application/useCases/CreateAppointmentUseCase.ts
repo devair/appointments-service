@@ -1,4 +1,4 @@
-import { DataSource } from "typeorm"
+import { DataSource, QueryRunner } from "typeorm"
 import { IAppointmentsRepository } from "../../ports/IAppointmentsRepository"
 import { ICreateAppointmentUseCase } from "../../core/usesCase/ICreateAppointmentUseCase"
 import { AppointmentEntity } from "../../infra/datasource/typeorm/entities/AppointmentEntity"
@@ -28,38 +28,53 @@ export class CreateAppointmentUseCase implements ICreateAppointmentUseCase {
     async execute(input: InputCreateAppointmentDto ): Promise<OutputCreateAppointmentDto> {  
         const { user, patientId, doctorId, slotId } = input
 
-        if(user?.role != Role.PATIENT ){
+        if(user?.role !== Role.PATIENT) {
             throw new Error(`Only patients can create appointments`)
         }
 
-        const doctorsRepository = new DoctorsRepositoryPostgres(this.dataSource.getRepository(DoctorEntity))        
-        const doctorFound = await doctorsRepository.findById(doctorId)
-        if (!doctorFound) {
-            throw new Error(`Doctor not found`)
-        }
+        const queryRunner: QueryRunner = this.dataSource.createQueryRunner()
 
-        const patientsRepository = new PatientsRepositoryPostgres(this.dataSource.getRepository(PatientEntity))
-        const patientFound = await patientsRepository.findById(doctorId)
-        if (!patientFound) {
-            throw new Error(`Patient not found`)
-        }
+        await queryRunner.connect()
+        await queryRunner.startTransaction()
 
-        const availableSlotsRepository = new AvailableSlotsRepositoryPostgres(this.dataSource.getRepository(AvailableSlotEntity))
-        
-        const availableSlot = await availableSlotsRepository.findById(slotId)
-        if (!availableSlot || !availableSlot?.isAvailable) {
-            throw new Error(`Available slot not found or not available`)
-        }
-        
-        const newAppointment = new Appointment(doctorFound, patientFound, availableSlot,'Ocupado')
-        const createdAppointment = await this.appointmentsRepository.create(newAppointment)
-        
-        return {
-            id: createdAppointment.id,            
-            doctorId: createdAppointment.doctorId,
-            startTime: createdAppointment.availableSlot.startTime,
-            endTime: createdAppointment.availableSlot.endTime,
-            isAvailable: createdAppointment.availableSlot.isAvailable            
+        try {
+            const doctorsRepository = new DoctorsRepositoryPostgres(queryRunner.manager.getRepository(DoctorEntity))        
+            const doctorFound = await doctorsRepository.findById(doctorId)
+            if (!doctorFound) {
+                throw new Error(`Doctor not found`)
+            }
+
+            const patientsRepository = new PatientsRepositoryPostgres(queryRunner.manager.getRepository(PatientEntity))
+            const patientFound = await patientsRepository.findById(patientId)
+            if (!patientFound) {
+                throw new Error(`Patient not found`)
+            }
+
+            const availableSlotsRepository = new AvailableSlotsRepositoryPostgres(queryRunner.manager.getRepository(AvailableSlotEntity))
+            const availableSlot = await availableSlotsRepository.findById(slotId)
+            if (!availableSlot || !availableSlot.isAvailable) {
+                throw new Error(`Available slot not found or not available`)
+            }
+            
+            await availableSlotsRepository.updateSlot(availableSlot.id, { isAvailable: false, version: availableSlot.version })
+            
+            const newAppointment = new Appointment(doctorFound, patientFound, availableSlot, 'Ocupado')
+            const createdAppointment = await this.appointmentsRepository.create(newAppointment)
+
+            await queryRunner.commitTransaction()
+
+            return {
+                id: createdAppointment.id,            
+                doctorId: createdAppointment.doctorId,
+                startTime: createdAppointment.availableSlot.startTime,
+                endTime: createdAppointment.availableSlot.endTime,
+                isAvailable: createdAppointment.availableSlot.isAvailable            
+            }
+        } catch (error) {
+            await queryRunner.rollbackTransaction()
+            throw error
+        } finally {
+            await queryRunner.release()
         }
     }
 }

@@ -27,6 +27,12 @@ export const AvailableSlotEntity = new EntitySchema<AvailableSlot>({
             name: "is_available",
             type: "boolean",
             default: true
+        },
+        version: {
+            name: "version",
+            type: "int",
+            version: true,
+            nullable: false
         }
     },    
     relations: {
