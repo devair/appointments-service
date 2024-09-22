@@ -28,4 +28,18 @@ export class AvailableSlotsRepositoryPostgres implements IAvailableSlotsReposito
 
         return all
     }
+
+    async updateSlot(id: number, slotUpdate: Partial<AvailableSlot>): Promise<AvailableSlot> {        
+        
+        const slotFound = await this.repository.findOne({ where: { id } })
+
+        if (!slotFound) {
+            throw new Error('Available slot not found');
+        }
+
+        this.repository.merge(slotFound, slotUpdate);
+
+        return await this.repository.save(slotFound);
+    }
+
 }

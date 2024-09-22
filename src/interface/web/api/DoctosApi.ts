@@ -12,6 +12,10 @@ import { CreateSlotController } from "../../../communication/controller/CreateSl
 import { CreateAppointmentUseCase } from "../../../application/useCases/CreateAppointmentUseCase"
 import { ICreateAppointmentUseCase } from "../../../core/usesCase/ICreateAppointmentUseCase"
 import { CreateAppointmentController } from "../../../communication/controller/CreateAppointmentController"
+import { EditAvailableSlotUseCase } from "../../../application/useCases/EditAvailableSlotUseCase"
+import { EditAvailableSlotController } from "../../../communication/controller/EditAvailableSlotController"
+import { IEditAvailableSlotUseCase } from "../../../core/usesCase/IEditAvailableSlotUseCase"
+import { InputEditAvailableSlotDto } from "../../../core/usesCase/dots/IEditAvailableSlotDto"
 
 export class DoctosApi {
 
@@ -47,7 +51,7 @@ export class DoctosApi {
         }
     }  
 
-    async createSlot( request, response: Response): Promise<Response>{
+    async createSlot( request: Request | any, response: Response): Promise<Response>{
         const createSlotUseCase: ICreateSlotUseCase = new CreateSlotUseCase(this.dataSource)
         const createSlotController = new CreateSlotController(createSlotUseCase)
         
@@ -64,7 +68,7 @@ export class DoctosApi {
         }
     }
 
-    async createAppointment( request, response: Response): Promise<Response>{
+    async createAppointment( request: Request | any , response: Response): Promise<Response>{
         const createAppointmentUseCase: ICreateAppointmentUseCase = new CreateAppointmentUseCase(this.dataSource)
         const createAppointmentController = new CreateAppointmentController(createAppointmentUseCase)
         
@@ -80,4 +84,21 @@ export class DoctosApi {
             return response.status(400).json({ message: ex.message })
         }
     }
+
+    async editSlots(request: Request | any, response: Response): Promise<Response> {
+        const id = parseInt(request.params?.id)
+        const editAvailableSlotUseCase: IEditAvailableSlotUseCase = new EditAvailableSlotUseCase(this.dataSource)
+        const editAvailableSlotController = new EditAvailableSlotController(editAvailableSlotUseCase)
+
+        const { startTime,endTime, isAvailable }: InputEditAvailableSlotDto  = request.body
+        const  user  = request?.user        
+        
+        try {
+            const data = await editAvailableSlotController.handler({ user, id, startTime,endTime, isAvailable })
+            response.contentType('application/json')
+            return response.status(200).json(data)
+        } catch (ex) {
+            return response.status(400).json({ message: ex.message })
+        }
+    }  
 }

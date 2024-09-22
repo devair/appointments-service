@@ -1,17 +1,24 @@
 import { Doctor } from "./Doctor"
 
-export class AvailableSlot{
+export class AvailableSlot {
 
     id?: number
     createdAt: Date
     doctorId: number
-    
-    constructor(
-        public doctor: Doctor,
-        public startTime: Date, 
-        public endTime: Date,         
-        public isAvailable: boolean        
-    ){
-        this.doctorId = doctor.id
-    }    
+    doctor: Doctor
+    startTime: Date
+    endTime: Date
+    isAvailable: boolean
+
+    constructor() { }
+
+    static assingObject({ doctor, startTime, endTime, isAvailable }): AvailableSlot {
+        const newAvailableSlot = new AvailableSlot()
+
+        Object.assign(newAvailableSlot, {
+            doctor, startTime, endTime, isAvailable
+        })
+        newAvailableSlot.doctorId = doctor?.id
+        return newAvailableSlot
+    }
 }

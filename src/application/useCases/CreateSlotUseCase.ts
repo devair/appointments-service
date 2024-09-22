@@ -34,7 +34,7 @@ export class CreateSlotUseCase implements ICreateSlotUseCase {
             throw new Error(`Doctor not found`)
         }
         
-        const newSlot = new AvailableSlot(doctorFound,startTime,endTime,isAvailable)        
+        const newSlot = AvailableSlot.assingObject({ doctor: doctorFound, startTime, endTime, isAvailable })      
         const createdSlot = await this.availableSlotsRepository.create(newSlot)
 
         return {
