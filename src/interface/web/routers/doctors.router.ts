@@ -11,6 +11,7 @@ export const doctorsRouter = (api: DoctosApi)=> {
 
     router.post('/appointments/', (req,res)=>api.createAppointment(req,res))
 
+    router.patch('/available-slots/:id', (req,res)=>api.editSlots(req,res))
 
     return router
 }
