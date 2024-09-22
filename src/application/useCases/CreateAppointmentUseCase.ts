@@ -56,10 +56,10 @@ export class CreateAppointmentUseCase implements ICreateAppointmentUseCase {
                 throw new Error(`Available slot not found or not available`)
             }
             
+            await availableSlotsRepository.updateSlot(availableSlot.id, { isAvailable: false, version: availableSlot.version })
+            
             const newAppointment = new Appointment(doctorFound, patientFound, availableSlot, 'Ocupado')
             const createdAppointment = await this.appointmentsRepository.create(newAppointment)
-
-            await availableSlotsRepository.updateSlot(availableSlot.id, { isAvailable: false })
 
             await queryRunner.commitTransaction()
 

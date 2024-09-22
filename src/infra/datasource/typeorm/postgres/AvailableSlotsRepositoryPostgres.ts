@@ -37,6 +37,10 @@ export class AvailableSlotsRepositoryPostgres implements IAvailableSlotsReposito
             throw new Error('Available slot not found');
         }
 
+        // Aqui eu forcei a atualizaçao para evitar que o mesmo slot fosse reservado por mais de 1 usuário. 
+        // O Typeorm incrementa a versao após a execução do método Save
+        slotUpdate.version++ 
+        
         this.repository.merge(slotFound, slotUpdate);
 
         return await this.repository.save(slotFound, { reload: true});
