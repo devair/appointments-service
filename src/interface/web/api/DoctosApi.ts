@@ -16,11 +16,13 @@ import { EditAvailableSlotUseCase } from "../../../application/useCases/EditAvai
 import { EditAvailableSlotController } from "../../../communication/controller/EditAvailableSlotController"
 import { IEditAvailableSlotUseCase } from "../../../core/usesCase/IEditAvailableSlotUseCase"
 import { InputEditAvailableSlotDto } from "../../../core/usesCase/dots/IEditAvailableSlotDto"
+import { IAppointmentQueueAdapterOUT } from "../../../core/messaging/IAppointmentQueueAdapterOUT"
 
 export class DoctosApi {
 
     constructor(
-        private readonly dataSource: DataSource
+        private readonly dataSource: DataSource,
+        private publisher: IAppointmentQueueAdapterOUT
     ) { }
 
     async list(request: Request, response: Response): Promise<Response> {
@@ -69,7 +71,7 @@ export class DoctosApi {
     }
 
     async createAppointment( request: Request | any , response: Response): Promise<Response>{
-        const createAppointmentUseCase: ICreateAppointmentUseCase = new CreateAppointmentUseCase(this.dataSource)
+        const createAppointmentUseCase: ICreateAppointmentUseCase = new CreateAppointmentUseCase(this.dataSource, this.publisher)
         const createAppointmentController = new CreateAppointmentController(createAppointmentUseCase)
         
         const { doctorId, patientId, slotId} = request.body

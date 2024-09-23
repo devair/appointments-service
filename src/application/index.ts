@@ -8,6 +8,7 @@ import { DoctorCreatedQueueAdapterIN } from '../infra/messaging/DoctorCreatedQue
 import { router } from '../interface/web/routers'
 import { PatientCreatedQueueAdapterIN } from '../infra/messaging/PatientCreatedQueueAdapterIN'
 import { CreatePatientUseCase } from './useCases/CreatePatientUseCase'
+import AppointmentAdapterOUT from '../infra/messaging/AppointmentAdapterOUT'
 
 dotenv.config()
 
@@ -27,7 +28,10 @@ AppDataSource.initialize().then(async (datasource) => {
     const patientCreatedQueueAdapterIN = new PatientCreatedQueueAdapterIN(rabbitMqUrl, createPatientUseCase)
     await patientCreatedQueueAdapterIN.consume()  
 
-    app.use('/api/v1', router(datasource))
+    const appointmentAdapterOUT = new AppointmentAdapterOUT()
+    await appointmentAdapterOUT.connect()
+
+    app.use('/api/v1', router(datasource,appointmentAdapterOUT))
 
     app.listen(3334,'0.0.0.0', () => {
         console.log(`Appointments Service listening  on port 3334`)
