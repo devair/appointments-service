@@ -8,19 +8,20 @@ import { Role } from "../../core/entities/Roles"
 import { DoctorsRepositoryPostgres } from "../../infra/datasource/typeorm/postgres/DoctorsRepositoryPostgres"
 import { DoctorEntity } from "../../infra/datasource/typeorm/entities/DoctorEntity"
 import { Appointment } from "../../core/entities/Appointment"
-import { AvailableSlot } from "../../core/entities/AvailableSlot"
 import { AvailableSlotsRepositoryPostgres } from "../../infra/datasource/typeorm/postgres/AvailableSlotsRepositoryPostgres"
 import { AvailableSlotEntity } from "../../infra/datasource/typeorm/entities/AvailableSlotEntity"
-import { Patient } from "../../core/entities/Patient"
 import { PatientsRepositoryPostgres } from "../../infra/datasource/typeorm/postgres/PatientsRepositoryPostgres"
 import { PatientEntity } from "../../infra/datasource/typeorm/entities/PatientEntity"
+import { QueueNames } from "../../core/messaging/QueueNames"
+import { IAppointmentQueueAdapterOUT } from "../../core/messaging/IAppointmentQueueAdapterOUT"
 
 export class CreateAppointmentUseCase implements ICreateAppointmentUseCase {
 
     private appointmentsRepository: IAppointmentsRepository
 
     constructor(
-        private dataSource: DataSource        
+        private dataSource: DataSource,
+        private appointmentQueueOut: IAppointmentQueueAdapterOUT        
     ) {
         this.appointmentsRepository = new AppointmentsRepositoryPostgres(this.dataSource.getRepository(AppointmentEntity))
     }
@@ -59,8 +60,16 @@ export class CreateAppointmentUseCase implements ICreateAppointmentUseCase {
             await availableSlotsRepository.updateSlot(availableSlot.id, { isAvailable: false, version: availableSlot.version })
             
             const newAppointment = new Appointment(doctorFound, patientFound, availableSlot, 'Ocupado')
-            const createdAppointment = await this.appointmentsRepository.create(newAppointment)
+            const createdAppointment = await this.appointmentsRepository.create(newAppointment)            
+            
+            const appointmentMessage = { doctorName: doctorFound.name,
+                     doctorEmail:  doctorFound.email, 
+                     patientName: patientFound.name,
+                     appointmentTime: createdAppointment.availableSlot.startTime
+            }
 
+            await this.appointmentQueueOut.publish(QueueNames.APPOINTMENT_CREATED , JSON.stringify(appointmentMessage))
+           
             await queryRunner.commitTransaction()
 
             return {
