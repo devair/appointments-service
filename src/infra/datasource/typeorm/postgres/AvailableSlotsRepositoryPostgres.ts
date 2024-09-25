@@ -39,11 +39,11 @@ export class AvailableSlotsRepositoryPostgres implements IAvailableSlotsReposito
 
         // Aqui eu forcei a atualizaçao para evitar que o mesmo slot fosse reservado por mais de 1 usuário. 
         // O Typeorm incrementa a versao após a execução do método Save
-        slotUpdate.version++ 
+        slotUpdate.version = slotFound.version + 1 
         
-        this.repository.merge(slotFound, slotUpdate);
+        this.repository.merge(slotFound, slotUpdate)
 
-        return await this.repository.save(slotFound, { reload: true});
+        return await this.repository.save(slotFound, { reload: true})
     }
 
 }

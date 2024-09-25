@@ -9,31 +9,40 @@ import { router } from '../interface/web/routers'
 import { PatientCreatedQueueAdapterIN } from '../infra/messaging/PatientCreatedQueueAdapterIN'
 import { CreatePatientUseCase } from './useCases/CreatePatientUseCase'
 import AppointmentAdapterOUT from '../infra/messaging/AppointmentAdapterOUT'
+import AppointmentAdapterOUTMock from '../tests/infra/messaging/mocks/AppointmentAdapterOUTMock'
 
 dotenv.config()
 
 const rabbitMqUrl = process.env.RABBITMQ_URL ? process.env.RABBITMQ_URL : ''
 
-const app = express()
+export const app = express()
 app.disable("x-powered-by")
 app.use(express.json())
 
-AppDataSource.initialize().then(async (datasource) => {
+if (process.env.NODE_ENV !== 'test') {
+    AppDataSource.initialize().then(async (datasource) => {
 
-    const createDoctorUseCase = new CreateDoctorUseCase(datasource)
-    const doctorCreatedConsumer = new DoctorCreatedQueueAdapterIN(rabbitMqUrl, createDoctorUseCase)
-    await doctorCreatedConsumer.consume()
+        const createDoctorUseCase = new CreateDoctorUseCase(datasource)
+        const doctorCreatedConsumer = new DoctorCreatedQueueAdapterIN(rabbitMqUrl, createDoctorUseCase)
+        await doctorCreatedConsumer.consume()
 
-    const createPatientUseCase = new CreatePatientUseCase(datasource)
-    const patientCreatedQueueAdapterIN = new PatientCreatedQueueAdapterIN(rabbitMqUrl, createPatientUseCase)
-    await patientCreatedQueueAdapterIN.consume()  
+        const createPatientUseCase = new CreatePatientUseCase(datasource)
+        const patientCreatedQueueAdapterIN = new PatientCreatedQueueAdapterIN(rabbitMqUrl, createPatientUseCase)
+        await patientCreatedQueueAdapterIN.consume()  
 
-    const appointmentAdapterOUT = new AppointmentAdapterOUT()
-    await appointmentAdapterOUT.connect()
+        const appointmentAdapterOUT = new AppointmentAdapterOUT()
+        await appointmentAdapterOUT.connect()
 
-    app.use('/api/v1', router(datasource,appointmentAdapterOUT))
+        app.use('/api/v1', router(datasource,appointmentAdapterOUT))
 
-    app.listen(3334,'0.0.0.0', () => {
-        console.log(`Appointments Service listening  on port 3334`)
-    })
-}).catch(error => console.log(error))
+        app.listen(3334,'0.0.0.0', () => {
+            console.log(`Appointments Service listening  on port 3334`)
+        })
+    }).catch(error => console.log(error))
+}
+else {
+    const instance = new AppointmentAdapterOUTMock('param1', 'param2');
+
+    app.use('/api/v1', router(AppDataSource,instance))
+}
+    

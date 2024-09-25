@@ -16,9 +16,9 @@ export class ListDoctorsUseCase implements IListDoctorsUseCase {
     }
     
     async execute(): Promise<OutputCreatedDoctorDto[]> {        
-        const categories = await this.doctorsRepository.list()
+        const doctors = await this.doctorsRepository.list()
 
-        const output = categories.map((elem) => ({
+        const output = doctors.map((elem) => ({
             id: elem.id,
             name: elem.name,               
             email: elem.email,
