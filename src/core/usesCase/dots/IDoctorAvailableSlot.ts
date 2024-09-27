@@ -1,5 +1,6 @@
 export interface OutputDoctorAvailableSlotDto {    
-    id: Number
+    id: number
+    doctorId: number
     name: string
     email: string
     crm: string

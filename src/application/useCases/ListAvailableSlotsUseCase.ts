@@ -21,6 +21,7 @@ export class ListAvailableSlotsUseCase implements IListAvailableSlotsUseCase {
 
         const output = slots.map((elem) => ({
             id: elem.id,
+            doctorId: elem.doctor.id,
             name: elem.doctor.name,                           
             email: elem.doctor.email,
             crm: elem.doctor.crm,
