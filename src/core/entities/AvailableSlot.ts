@@ -6,12 +6,31 @@ export class AvailableSlot {
     createdAt: Date
     doctorId: number
     doctor: Doctor
-    startTime: Date
-    endTime: Date
+    private _startTime: Date
+    private _endTime: Date
     isAvailable: boolean
     version: number
 
     constructor() { }
+
+    get startTime(){
+        return this._startTime
+    }
+    set startTime(startTime: Date){
+        if(typeof(startTime)==='string'){
+            this._startTime = new Date(startTime)
+        }
+    }
+
+    get endTime(){
+        return this._endTime
+    }
+
+    set endTime(endTime: Date){
+        if(typeof(endTime)==='string'){
+            this._endTime = new Date(endTime)
+        }
+    }
 
     static assingObject({ doctor, startTime, endTime, isAvailable }): AvailableSlot {
         const newAvailableSlot = new AvailableSlot()        
@@ -27,7 +46,15 @@ export class AvailableSlot {
     }
 
     static validations(slot: AvailableSlot): void {
-        const { startTime, endTime } = slot
+        let { startTime, endTime } = slot
+
+        if(typeof(startTime)==='string'){
+            startTime = new Date(startTime)
+        }
+        
+        if(typeof(endTime)==='string'){
+            endTime = new Date(endTime)
+        }
 
         if(startTime && endTime && startTime >= endTime){
             throw new Error('End Time should be greater then Start Time') 

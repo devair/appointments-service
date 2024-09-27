@@ -33,12 +33,11 @@ export class EditAvailableSlotUseCase implements IEditAvailableSlotUseCase {
 
         const slotFound = await this.availableSlotsRepository.findById(id)
 
-        const slot = AvailableSlot.assingObject({ doctor: doctorFound, startTime, endTime, isAvailable})
-        slot.isAvailable = isAvailable
-
         if (!slotFound) {
             throw new Error(`Slot Time not found`)
         }
+        
+        const slot = AvailableSlot.assingObject({ doctor: doctorFound, startTime, endTime, isAvailable})    
         
         const slotUpdated = await this.availableSlotsRepository.updateSlot(id, slot)
 
