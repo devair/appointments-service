@@ -37,6 +37,11 @@ RABBITMQ_URL=amqp://localhost
 # Configuraçao para geraçao do token JWT
 JWT_SECRET=MySeCrEt
 ```
+
+
 ## Documentos
 
 Relatório de testes unitários está contigo do diretório deste projeto [./static/coverage/lcov-report/index.html](./static/coverage/lcov-report/index.html)
+
+Imagem do relatorio
+![Imagem do relatório](./static/coverage/report.png)
