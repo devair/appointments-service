@@ -1,0 +1,23 @@
+name: CI/CD Pipeline
+
+on:
+  workflow_dispatch: 
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+permissions:
+  contents: 'read'
+  id-token: 'write'
+
+jobs:
+  docker:  
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    name: Publish Docker Image
+    uses: ./.github/workflows/docker-image.yml
+    secrets: inherit    
+
+    
